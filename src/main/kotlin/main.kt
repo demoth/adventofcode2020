@@ -9,7 +9,10 @@ fun main(args: Array<String>) {
 
 fun solve(task: String, input: List<String>): String? = solutions[task]?.invoke(input)
 
-val solutions = mapOf<String, (input: List<String>) -> String>("1" to ::day1)
+val solutions = mapOf<String, (input: List<String>) -> String>(
+    "1" to ::day1,
+    "1.5" to ::day1Part2
+)
 
 fun day1(input: List<String>): String {
 
@@ -22,6 +25,27 @@ fun day1(input: List<String>): String {
                 continue
             if (sorted[j] + sorted[i] == 2020)
                 return (sorted[j] * sorted[i]).toString()
+
+        }
+    }
+
+    return "NaN"
+}
+
+fun day1Part2(input: List<String>): String {
+
+    val sorted = input.map { it.toInt() }.sorted()
+    val set = input.map { it.toInt() }.toHashSet()
+    for (left in sorted.indices) {
+        for (right in sorted.indices.reversed()) {
+            if (left >= right)
+                break
+            if (sorted[right] > 2018)
+                continue
+            val sum = sorted[right] + sorted[left]
+            val remainder = 2020 - sum
+            if (set.contains(remainder))
+                return (sorted[right] * sorted[left] * remainder).toString()
 
         }
     }
