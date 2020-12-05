@@ -12,7 +12,8 @@ fun solve(task: String, input: List<String>): String? = solutions[task]?.invoke(
 val solutions = mapOf<String, (input: List<String>) -> String>(
     "1" to ::day1,
     "1.5" to ::day1Part2,
-    "2" to ::day2
+    "2" to ::day2,
+    "2.5" to ::day2Part2
 )
 
 fun day1(input: List<String>): String {
@@ -59,4 +60,13 @@ fun day2(input: List<String>): String = input.filter { l ->
     val (occurrences, letter) = rules.split(" ")
     val (min, max) = occurrences.split("-").map { it.toInt() }
     password.count { it == letter[0] } in min..max
+}.size.toString()
+
+fun day2Part2(input: List<String>): String = input.filter { l ->
+    val (rules, password) = l.split(":")
+    val (positions, letterS) = rules.split(" ")
+    val (first, second) = positions.split("-").map { it.toInt() }
+    val letter = letterS[0]
+    password[first] ==  letter && password[second] != letter
+            || password[first] != letter && password[second] == letter
 }.size.toString()
