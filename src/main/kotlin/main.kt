@@ -19,7 +19,8 @@ val solutions = mapOf<String, Pair<Day, Day>>(
     "2" to (::day2 to ::day2Part2),
     "3" to (::day3 to ::day3Part2),
     "4" to (::day4 to ::day4Part2),
-    "5" to (::day5 to ::day5Part2)
+    "5" to (::day5 to ::day5Part2),
+    "6" to (::day6 to ::day6Part2)
 )
 
 fun day1(input: List<String>): String {
@@ -226,4 +227,44 @@ fun day5Part2(input: List<String>): String {
     }
     return "NaN"
 
+}
+
+fun day6(input: List<String>): String {
+
+    val group = hashSetOf<Char>()
+    var total = 0
+    input.forEach { line ->
+        if (line.isBlank()) {
+            total += group.size
+            group.clear()
+        } else {
+            line.forEach { group.add(it) }
+        }
+    }
+    total += group.size
+
+    return total.toString()
+}
+
+fun day6Part2(input: List<String>): String {
+    val group = hashSetOf<Char>()
+    var total = 0
+    var newGroup = true
+    input.forEach { line ->
+        if (line.isBlank()) {
+            total += group.size
+            group.clear()
+            newGroup = true
+        } else {
+            if (newGroup) {
+                group.addAll(line.map { it })
+                newGroup = false
+            } else {
+                group.retainAll(line.map { it })
+            }
+        }
+    }
+    total += group.size
+
+    return total.toString()
 }
