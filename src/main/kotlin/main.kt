@@ -16,7 +16,8 @@ val solutions = mapOf<String, (input: List<String>) -> String>(
     "2.5" to ::day2Part2,
     "3" to ::day3,
     "3.5" to ::day3Part2,
-    "4" to ::day4
+    "4" to ::day4,
+    "4.5" to ::day4Part2
 )
 
 fun day1(input: List<String>): String {
@@ -144,4 +145,41 @@ fun day4(input: List<String>): String {
         }
     }
     return valid.toString()
+}
+
+fun day4Part2(input: List<String>): String {
+    var valid = 0
+    val requiredFields = setOf("ecl", "pid", "eyr", "hcl", "byr", "iyr", "hgt")
+    val eyeColors = setOf("amb", "blu", "brn", "gry", "grn", "hzl", "oth")
+    val passportFields = mutableSetOf<String>()
+    input.forEach { line ->
+        if (line.isBlank()) {
+            if (passportFields.containsAll(requiredFields))
+                valid++
+            passportFields.clear()
+        } else {
+            line.split(" ").forEach { field ->
+                val (key, value) = field.split(":")
+                val fieldIsValid: Boolean = when (key) {
+                    "byr" -> { value.toInt() in 1920..2002 }
+                    "iyr" -> { value.toInt() in 2010..2020 }
+                    "eyr" -> { value.toInt() in 2020..2030 }
+                    "hgt" -> {
+                        value.endsWith("in") && value.takeWhile { it.isDigit() }.toInt() in 59..76
+                                || value.endsWith("cm") && value.takeWhile { it.isDigit() }.toInt() in 150..193
+                    }
+                    "hcl" -> value.matches("#.{6}".toRegex())
+                    "ecl" -> eyeColors.contains(value)
+                    "pid" -> value.matches("\\d{9}".toRegex())
+                    else -> false
+                }
+
+                if (fieldIsValid) {
+                    passportFields.add(key)
+                }
+            }
+        }
+    }
+    return valid.toString()
+
 }
