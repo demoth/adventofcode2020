@@ -7,18 +7,19 @@ fun main(args: Array<String>) {
     println("solution is ${solve(day, input)}")
 }
 
-fun solve(task: String, input: List<String>): String? = solutions[task]?.invoke(input)
+fun solve(task: String, input: List<String>): Pair<String, String>? {
+    return solutions[task]?.run {
+        Pair(this.first.invoke(input), this.second.invoke(input))
+    }
+}
+typealias Day = (input: List<String>) -> String
 
-val solutions = mapOf<String, (input: List<String>) -> String>(
-    "1" to ::day1,
-    "1.5" to ::day1Part2,
-    "2" to ::day2,
-    "2.5" to ::day2Part2,
-    "3" to ::day3,
-    "3.5" to ::day3Part2,
-    "4" to ::day4,
-    "4.5" to ::day4Part2,
-    "5" to ::day5
+val solutions = mapOf<String, Pair<Day, Day>>(
+    "1" to (::day1 to ::day1Part2),
+    "2" to (::day2 to ::day2Part2),
+    "3" to (::day3 to ::day3Part2),
+    "4" to (::day4 to ::day4Part2),
+    "5" to (::day5 to ::day5Part2)
 )
 
 fun day1(input: List<String>): String {
@@ -72,7 +73,7 @@ fun day2Part2(input: List<String>): String = input.filter { l ->
     val (positions, letterS) = rules.split(" ")
     val (first, second) = positions.split("-").map { it.toInt() }
     val letter = letterS[0]
-    password[first] ==  letter && password[second] != letter
+    password[first] == letter && password[second] != letter
             || password[first] != letter && password[second] == letter
 }.size.toString()
 
@@ -162,9 +163,15 @@ fun day4Part2(input: List<String>): String {
             line.split(" ").forEach { field ->
                 val (key, value) = field.split(":")
                 val fieldIsValid: Boolean = when (key) {
-                    "byr" -> { value.toInt() in 1920..2002 }
-                    "iyr" -> { value.toInt() in 2010..2020 }
-                    "eyr" -> { value.toInt() in 2020..2030 }
+                    "byr" -> {
+                        value.toInt() in 1920..2002
+                    }
+                    "iyr" -> {
+                        value.toInt() in 2010..2020
+                    }
+                    "eyr" -> {
+                        value.toInt() in 2020..2030
+                    }
                     "hgt" -> {
                         value.endsWith("in") && value.takeWhile { it.isDigit() }.toInt() in 59..76
                                 || value.endsWith("cm") && value.takeWhile { it.isDigit() }.toInt() in 150..193
@@ -196,7 +203,27 @@ fun day5(input: List<String>): String {
             .replace("L", "0")
             .replace("R", "1")
             .toInt(2)
-        println("$seat, row=$row, col=$col")
         row * 8 + col
     }.maxOrNull().toString()
+}
+
+fun day5Part2(input: List<String>): String {
+    val ids = input.map { seat ->
+
+        val row: Int = seat.substring(0, 7)
+            .replace("F", "0")
+            .replace("B", "1")
+            .toInt(2)
+        val col = seat.substring(7)
+            .replace("L", "0")
+            .replace("R", "1")
+            .toInt(2)
+        row * 8 + col
+    }.sorted()
+    ids.forEachIndexed { index, seat ->
+        if (index != 0 && index != ids.size - 1 && ids[index - 1] + 1 != ids[index])
+            return (ids[index - 1] + 1).toString()
+    }
+    return "NaN"
+
 }
