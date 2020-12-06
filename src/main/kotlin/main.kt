@@ -15,7 +15,8 @@ val solutions = mapOf<String, (input: List<String>) -> String>(
     "2" to ::day2,
     "2.5" to ::day2Part2,
     "3" to ::day3,
-    "3.5" to ::day3Part2
+    "3.5" to ::day3Part2,
+    "4" to ::day4
 )
 
 fun day1(input: List<String>): String {
@@ -125,4 +126,22 @@ fun day3Part2(input: List<String>): String {
         }
     }
     return (trees1 * trees2 * trees3 * trees4 * trees5).toString()
+}
+
+fun day4(input: List<String>): String {
+    var valid = 0
+    val requiredFields = setOf("ecl", "pid", "eyr", "hcl", "byr", "iyr", "hgt")
+    val passportFields = mutableSetOf<String>()
+    input.forEach { line ->
+        if (line.isBlank()) {
+            if (passportFields.containsAll(requiredFields))
+                valid++
+            passportFields.clear()
+        } else {
+            line.split(" ").forEach { field ->
+                passportFields.add(field.split(":").first())
+            }
+        }
+    }
+    return valid.toString()
 }
