@@ -13,7 +13,8 @@ val solutions = mapOf<String, (input: List<String>) -> String>(
     "1" to ::day1,
     "1.5" to ::day1Part2,
     "2" to ::day2,
-    "2.5" to ::day2Part2
+    "2.5" to ::day2Part2,
+    "3" to ::day3
 )
 
 fun day1(input: List<String>): String {
@@ -70,3 +71,14 @@ fun day2Part2(input: List<String>): String = input.filter { l ->
     password[first] ==  letter && password[second] != letter
             || password[first] != letter && password[second] == letter
 }.size.toString()
+
+fun day3(input: List<String>): String {
+    var trees = 0
+    var x = 0
+    for (y in 1 until input.size) {
+        x += 3
+        if (input[y][x % input[y].length] == '#')
+            trees++
+    }
+    return trees.toString()
+}
