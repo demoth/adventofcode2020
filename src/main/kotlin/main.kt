@@ -14,7 +14,8 @@ val solutions = mapOf<String, (input: List<String>) -> String>(
     "1.5" to ::day1Part2,
     "2" to ::day2,
     "2.5" to ::day2Part2,
-    "3" to ::day3
+    "3" to ::day3,
+    "3.5" to ::day3Part2
 )
 
 fun day1(input: List<String>): String {
@@ -81,4 +82,47 @@ fun day3(input: List<String>): String {
             trees++
     }
     return trees.toString()
+}
+
+/*
+    1 Right 1, down 1.
+    2 Right 3, down 1. (This is the slope you already checked.)
+    3 Right 5, down 1.
+    4 Right 7, down 1.
+    5 Right 1, down 2.
+ */
+fun day3Part2(input: List<String>): String {
+    var trees1 = 0L
+    var x1 = 0
+    var trees2 = 0L
+    var x2 = 0
+    var trees3 = 0L
+    var x3 = 0
+    var trees4 = 0L
+    var x4 = 0
+    var trees5 = 0L
+    var x5 = 1
+
+    for (y in 1 until input.size) {
+        x1 += 1
+        x2 += 3
+        x3 += 5
+        x4 += 7
+
+        if (input[y][x1 % input[y].length] == '#')
+            trees1++
+        if (input[y][x2 % input[y].length] == '#')
+            trees2++
+        if (input[y][x3 % input[y].length] == '#')
+            trees3++
+        if (input[y][x4 % input[y].length] == '#')
+            trees4++
+        if (y % 2 == 0) {
+            if (input[y][x5 % input[y].length] == '#') {
+                trees5++
+            }
+            x5 += 1
+        }
+    }
+    return (trees1 * trees2 * trees3 * trees4 * trees5).toString()
 }
