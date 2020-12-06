@@ -17,7 +17,8 @@ val solutions = mapOf<String, (input: List<String>) -> String>(
     "3" to ::day3,
     "3.5" to ::day3Part2,
     "4" to ::day4,
-    "4.5" to ::day4Part2
+    "4.5" to ::day4Part2,
+    "5" to ::day5
 )
 
 fun day1(input: List<String>): String {
@@ -182,4 +183,20 @@ fun day4Part2(input: List<String>): String {
     }
     return valid.toString()
 
+}
+
+fun day5(input: List<String>): String {
+    return input.map { seat ->
+
+        val row: Int = seat.substring(0, 7)
+            .replace("F", "0")
+            .replace("B", "1")
+            .toInt(2)
+        val col = seat.substring(7)
+            .replace("L", "0")
+            .replace("R", "1")
+            .toInt(2)
+        println("$seat, row=$row, col=$col")
+        row * 8 + col
+    }.maxOrNull().toString()
 }
