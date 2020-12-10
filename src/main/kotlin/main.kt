@@ -1,4 +1,5 @@
 import java.io.File
+import java.util.*
 
 fun main(args: Array<String>) {
     val day = if (args.isNotEmpty()) args.first() else return
@@ -20,7 +21,8 @@ val solutions = mapOf<String, Pair<Day, Day>>(
     "3" to (::day3 to ::day3Part2),
     "4" to (::day4 to ::day4Part2),
     "5" to (::day5 to ::day5Part2),
-    "6" to (::day6 to ::day6Part2)
+    "6" to (::day6 to ::day6Part2),
+    "7" to (::day7 to ::day7Part2),
 )
 
 fun day1(input: List<String>): String {
@@ -267,4 +269,43 @@ fun day6Part2(input: List<String>): String {
     total += group.size
 
     return total.toString()
+}
+
+fun day7(input: List<String>): String {
+    // inner -> outer
+    val rules = hashMapOf<String, MutableSet<String>>()
+    val regexOuter = """(.*) bags contain (.*)""".toRegex()
+    val regexInner = """\d?(.*) bag(s)?""".toRegex()
+
+    for (rule in input) {
+        val groups = regexOuter.findAll(rule).first()
+        val outerBag = groups.groupValues[1].trim()
+        val innerBagGroups = groups.groupValues[2]
+        innerBagGroups.split(",").forEach { innerBagGroup ->
+            val innerBag = regexInner.findAll(innerBagGroup.trim()).first().groupValues[1].trim()
+            if (innerBag != "no other") {
+                if (!rules.containsKey(innerBag))
+                    rules[innerBag] = hashSetOf()
+
+                rules[innerBag]?.add(outerBag)
+            }
+        }
+    }
+
+    val start = "shiny gold"
+    val result = hashSetOf<String>()
+    val currentSet = Stack<String>()
+    currentSet.push(start)
+    while (currentSet.isNotEmpty()) {
+        val currentNode = currentSet.pop()
+        val newNodes = rules[currentNode]?.toMutableSet() ?: continue
+        currentSet.addAll(newNodes)
+        result.addAll(newNodes)
+    }
+
+    return result.size.toString()
+}
+
+fun day7Part2(input: List<String>): String {
+    return "NaN"
 }
