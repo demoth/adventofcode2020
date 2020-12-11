@@ -23,6 +23,7 @@ val solutions = mapOf<String, Pair<Day, Day>>(
     "5" to (::day5 to ::day5Part2),
     "6" to (::day6 to ::day6Part2),
     "7" to (::day7 to ::day7Part2),
+    "8" to (::day8 to ::day8Part2),
 )
 
 fun day1(input: List<String>): String {
@@ -339,4 +340,37 @@ fun countBags(name: String, rules: Map<String, MutableSet<Pair<String, Int>>>): 
     return 1 + (rules[name]?.map {
         it.second * countBags(it.first, rules)
     }?.sum() ?: 0)
+}
+
+fun day8Part2(input: List<String>): String {
+    return "NaN"
+}
+
+fun day8(input: List<String>): String {
+
+    var acc = 0
+    var index = 0
+    var limit = 0
+
+    val executed = hashSetOf<Int>()
+    while (true) {
+        if (!executed.add(index))
+            break
+
+        val (cmd, arg) = input[index].split(" ")
+        when (cmd) {
+            "acc" -> {
+                acc += arg.toInt()
+                index++
+            }
+            "jmp" -> index += arg.toInt()
+            "nop" -> index++
+            else -> return "Unknown cmd $cmd"
+        }
+        limit++
+        if (limit >= input.size)
+            return "limit > input.size - infinite loop"
+    }
+
+    return acc.toString()
 }
