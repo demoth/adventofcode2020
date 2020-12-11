@@ -307,5 +307,36 @@ fun day7(input: List<String>): String {
 }
 
 fun day7Part2(input: List<String>): String {
-    return "NaN"
+
+    val rules = hashMapOf<String, MutableSet<Pair<String, Int>>>()
+    val regexOuter = """(.*) bags contain (.*)""".toRegex()
+    val regexInner = """(\d+ )?(.*) bag(s)?""".toRegex()
+
+    // dotted black bags contain 4 muted aqua bags, 2 light lime bags, 3 posh turquoise bags, 1 light silver bag.
+    for (rule in input) {
+        val groups = regexOuter.findAll(rule).first()
+        val outerBag = groups.groupValues[1].trim()
+        val innerBagGroups = groups.groupValues[2]
+        innerBagGroups.split(",").forEach { innerBagGroup ->
+            if (innerBagGroup != "no other bags.") {
+                val groupResult = regexInner.findAll(innerBagGroup.trim()).first()
+                val innerBag = groupResult.groupValues[2].trim()
+                val amount = groupResult.groupValues[1].trim().toInt()
+
+                if (!rules.containsKey(outerBag))
+                    rules[outerBag] = hashSetOf()
+
+                rules[outerBag]?.add(innerBag to amount)
+            }
+        }
+    }
+
+    val start = "shiny gold"
+    return (-1 + countBags(start, rules)).toString()
+}
+
+fun countBags(name: String, rules: Map<String, MutableSet<Pair<String, Int>>>): Int {
+    return 1 + (rules[name]?.map {
+        it.second * countBags(it.first, rules)
+    }?.sum() ?: 0)
 }
